@@ -14,4 +14,4 @@ phases:
         - echo Build success!
 artifacts:
   files:
-    - dist/**/*
+    - 'dist/**/*'
