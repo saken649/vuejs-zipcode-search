@@ -3,6 +3,8 @@ version: 0.2
 phases:
   install:
     commands:
+      - echo Updating npm
+      - npm update -g npm
       - echo Installing jQuery
       - npm install --save jquery
       - echo Installing Bootstrap-Vue
