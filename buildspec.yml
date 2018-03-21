@@ -7,11 +7,9 @@ phases:
       - npm install --save jquery
       - echo Installing Bootstrap-Vue
       - npm install --save bootstrap-vue
-    build:
-      Commands:
-        - echo Building...
-        - npm run build
-        - echo Build success!
+  build:
+    commands:
+      - npm run build
 artifacts:
   files:
     - '**/*'
