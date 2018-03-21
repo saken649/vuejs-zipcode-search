@@ -4,9 +4,9 @@ phases:
   install:
     commands:
       - echo Installing jQuery
-      - npm install -g jquery
+      - npm install i -g jquery
       - echo Installing Bootstrap-Vue
-      - npm install -g bootstrap-vue
+      - npm install i -g bootstrap-vue
     build:
       Commands:
         - echo Building...
