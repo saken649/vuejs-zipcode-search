@@ -4,7 +4,7 @@
     <b-row>
       <b-col md="12" lg="6">
         <b-form class="margin-top-30">
-          <b-form-input type="text" placeholder="example: 1500001" maxlength="7" class="zip"/>
+          <b-form-input type="text" placeholder="example: 1500001" maxlength="7" v-model="zip"/>
           <div class="margin-top-10">
             <b-button type="button" @click="search()" variant="info">検索</b-button>
             <b-button type="button" @click="reset()" variant="outline-info">リセット</b-button>
@@ -22,6 +22,7 @@
 
 <script>
 import Header from './components/Header'
+import axios from 'axios-jsonp-pro'
 
 export default {
   name: 'App',
@@ -32,37 +33,37 @@ export default {
     return {
       prefecture: '',
       city: '',
-      address: ''
+      address: '',
+      zip: ''
     }
   },
   methods: {
     search () {
-      var url = 'http://zipcloud.ibsnet.co.jp/api/search?zipcode=' + $('.zip').val()
+      var url = 'http://zipcloud.ibsnet.co.jp/api/search?zipcode=' + this.zip
       var data = this
-      $.ajax({
-        type: 'GET',
-        url: url,
-        dataType: 'jsonp'
-      }).done(function (json) {
-        console.log(json)
-        if (json.status === 200 && json.results !== null) {
-          var result = json.results[0]
-          data.prefecture = result.address1 + ' (' + result.kana1 + ')'
-          data.city = result.address2 + ' (' + result.kana2 + ')'
-          data.address = result.address3 + ' (' + result.kana3 + ')'
-        } else {
-          if (json.message === null) {
-            alert('存在しない郵便番号のようです。')
+      axios
+        .jsonp(url)
+        .then(json => {
+          console.log(json)
+          if (json.status === 200 && json.results !== null) {
+            var result = json.results[0]
+            data.prefecture = result.address1 + ' (' + result.kana1 + ')'
+            data.city = result.address2 + ' (' + result.kana2 + ')'
+            data.address = result.address3 + ' (' + result.kana3 + ')'
           } else {
-            alert(json.message)
+            if (json.message === null) {
+              alert('存在しない郵便番号のようです。')
+            } else {
+              alert(json.message)
+            }
           }
-        }
-      }).fail(function (xhr) {
-        console.log(xhr)
-      })
+        })
+        .catch(xhr => {
+          console.log(xhr)
+        })
     },
     reset () {
-      $('.zip').val('')
+      this.zip = ''
       this.prefecture = ''
       this.city = ''
       this.address = ''
