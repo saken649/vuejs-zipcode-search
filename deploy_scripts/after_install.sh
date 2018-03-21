@@ -1,2 +1,2 @@
 #!/bin/bash
-cp ./httpd/httpd.conf /etc/httpd/conf/httpd.conf
+cp /var/www/html/deploy_scripts/httpd/httpd.conf /etc/httpd/conf/httpd.conf
