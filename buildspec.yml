@@ -5,10 +5,8 @@ phases:
     commands:
       - echo Updating npm
       - npm update -g npm
-      - echo Installing jQuery
-      - npm install --save jquery
-      - echo Installing Bootstrap-Vue
-      - npm install --save bootstrap-vue
+      - echo Installing jQuery Bootstrap-Vue
+      - npm install --save jquery bootstrap-vue
   build:
     commands:
       - npm run build
