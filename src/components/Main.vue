@@ -9,9 +9,11 @@
           </div>
         </b-form>
         <b-list-group id="search-result" class="margin-top-30">
-          <b-list-group-item>Prefecture: {{prefecture}}</b-list-group-item>
-          <b-list-group-item>City: {{city}}</b-list-group-item>
-          <b-list-group-item>Address: {{address}}</b-list-group-item>
+          <b-list-group-item>Prefecture: {{prefecture}}{{prefecture_en}}</b-list-group-item>
+          <b-list-group-item>City: {{address1}}{{address1_en}}</b-list-group-item>
+          <b-list-group-item>Address: {{address2}}{{address2_en}}</b-list-group-item>
+          <b-list-group-item>: {{address3}}{{address3_en}}</b-list-group-item>
+          <b-list-group-item>: {{address4}}{{address4_en}}</b-list-group-item>
         </b-list-group>
       </b-col>
     </b-row>
@@ -20,45 +22,53 @@
 <script>
 import axios from 'axios-jsonp-pro'
 
+// APIから返ってくる項目
+var apiReturnList = [
+  'prefecture',
+  'address1',
+  'address2',
+  'address3',
+  'address4'
+]
+
 export default {
   data () {
-    return {
-      prefecture: '',
-      city: '',
-      address: '',
-      zip: ''
-    }
+    var ret = {}
+    apiReturnList.forEach(function (val) {
+      ret[val] = ''
+      ret[val + '_en'] = ''
+    })
+    ret['zip'] = ''
+    return ret
   },
   methods: {
     search () {
-      var url = 'http://zipcloud.ibsnet.co.jp/api/search?zipcode=' + this.zip
+      // zipcloudではGitHubPagesでMixedContent問題が発生するためこちらに変更
+      var url = 'https://madefor.github.io/postal-code-api/api/v1/' + this.zip.substr(0, 3) + '/' + this.zip.substr(-4) + '.json'
+      console.log(url)
       var data = this
       axios
-        .jsonp(url)
-        .then(json => {
-          console.log(json)
-          if (json.status === 200 && json.results !== null) {
-            var result = json.results[0]
-            data.prefecture = result.address1 + ' (' + result.kana1 + ')'
-            data.city = result.address2 + ' (' + result.kana2 + ')'
-            data.address = result.address3 + ' (' + result.kana3 + ')'
-          } else {
-            if (json.message === null) {
-              alert('存在しない郵便番号のようです。')
-            } else {
-              alert(json.message)
-            }
-          }
+        .get(url)
+        .then(response => {
+          console.log(response)
+          var result = response.data.data[0]
+          apiReturnList.forEach(function (val) {
+            data[val] = (result.ja[val] !== '') ? result.ja[val] : ''
+            data[val + '_en'] = (result.en[val] !== '') ? ' (' + result.en[val] + ')' : ''
+          })
         })
         .catch(xhr => {
           console.log(xhr)
+          alert('住所が存在しません。')
         })
     },
     reset () {
-      this.zip = ''
-      this.prefecture = ''
-      this.city = ''
-      this.address = ''
+      var data = this
+      apiReturnList.forEach(function (val) {
+        data.$set(data, val, '')
+        data.$set(data, val + '_en', '')
+      })
+      data.$set(data, 'zip', '')
     }
   }
 }
