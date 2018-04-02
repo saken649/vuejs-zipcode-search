@@ -23,7 +23,10 @@ jobs:
           name: install saddler
           command: |
             gem install --no-document checkstyle_filter-git saddler saddler-reporter-github findbugs_translate_checkstyle_format
-      
+      - run:
+          name: npm install
+          command: npm install
+
       - run:
           name: exec saddler
           command: |
