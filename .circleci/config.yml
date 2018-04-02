@@ -1,18 +1,18 @@
-# Javascript Node CircleCI 2.0 configuration file
+# Ruby CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
 #
 version: 2
 jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:7.10
+       - image: circleci/ruby:2.4.1-node-browsers
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
@@ -22,19 +22,31 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: yarn install
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
         
-      # run tests!
-      - run: yarn test
-
-
-
+      - run:
+          name: install saddler
+          command: |
+            gem install --no-document checkstyle_filter-git saddler saddler-reporter-github findbugs_translate_checkstyle_format
+      
+      - run:
+          name: exec saddler
+          command: |
+            if [ -z "${CI_PULLREQUEST}" ]; then
+              REPORTER=Saddler::Reporter::Github::CommitReviewComment
+            else
+              REPORTER=Saddler::Reporter::Github::PullRequestReviewComment
+            fi
+            npm run lint | saddler report --require saddler/reporter/github --reporter $REPORTER
