@@ -1,22 +1,22 @@
 <template>
   <b-row>
-      <b-col md="12" lg="6">
-        <b-form class="margin-top-30">
-          <b-form-input type="text" placeholder="example: 1500001" maxlength="7" v-model="zip"/>
-          <div class="margin-top-10">
-            <b-button type="button" @click="search()" variant="info">検索</b-button>
-            <b-button type="button" @click="reset()" variant="outline-info">リセット</b-button>
-          </div>
-        </b-form>
-        <b-list-group id="search-result" class="margin-top-30">
-          <b-list-group-item>Prefecture: {{prefecture}}{{prefecture_en}}</b-list-group-item>
-          <b-list-group-item>City: {{address1}}{{address1_en}}</b-list-group-item>
-          <b-list-group-item>Address: {{address2}}{{address2_en}}</b-list-group-item>
-          <b-list-group-item>: {{address3}}{{address3_en}}</b-list-group-item>
-          <b-list-group-item>: {{address4}}{{address4_en}}</b-list-group-item>
-        </b-list-group>
-      </b-col>
-    </b-row>
+    <b-col md="12" lg="6">
+      <b-form class="margin-top-30">
+        <b-form-input type="text" placeholder="example: 1500001" maxlength="7" v-model="zip"/>
+        <div class="margin-top-10">
+          <b-button type="button" @click="search()" variant="info">検索</b-button>
+          <b-button type="button" @click="reset()" variant="outline-info">リセット</b-button>
+        </div>
+      </b-form>
+      <b-list-group id="search-result" class="margin-top-30">
+        <b-list-group-item>Prefecture: {{prefecture}}{{prefecture_en}}</b-list-group-item>
+        <b-list-group-item>City: {{address1}}{{address1_en}}</b-list-group-item>
+        <b-list-group-item>Address: {{address2}}{{address2_en}}</b-list-group-item>
+        <b-list-group-item>: {{address3}}{{address3_en}}</b-list-group-item>
+        <b-list-group-item>: {{address4}}{{address4_en}}</b-list-group-item>
+      </b-list-group>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
@@ -45,7 +45,6 @@ export default {
     search () {
       // zipcloudではGitHubPagesでMixedContent問題が発生するためこちらに変更
       var url = 'https://madefor.github.io/postal-code-api/api/v1/' + this.zip.substr(0, 3) + '/' + this.zip.substr(-4) + '.json'
-      console.log(url)
       var data = this
       axios
         .get(url)
